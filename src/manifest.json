@@ -1,0 +1,41 @@
+{
+  "name": "__MSG_EXT_NAME__",
+  "description": "__MSG_EXT_DESCRIPTION__",
+  "version": "1.0.1",
+  "manifest_version": 3,
+  "minimum_chrome_version": "109",
+  "default_locale": "en",
+  "icons": {
+    "16": "./images/icon16.png",
+    "24": "./images/icon24.png",
+    "32": "./images/icon32.png",
+    "48": "./images/icon48.png",
+    "128": "./images/icon128.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["tabs", "scripting", "favicon", "storage", "search"],
+  "host_permissions": ["*://*/*"],
+  "content_scripts": [
+    {
+      "js": ["scripts/content.js"],
+      "matches": ["*://*/*"]
+    }
+  ],
+  "action": {
+    "default_title": "__MSG_EXT_NAME_SHORT__",
+    "default_popup": "popup/popup.html"
+  },
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "windows": "Alt+A",
+        "mac": "Alt+A",
+        "chromeos": "Alt+A",
+        "linux": "Alt+A"
+      }
+    }
+  }
+}
