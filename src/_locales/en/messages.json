@@ -6,7 +6,7 @@
     "message": "Deep Tab Search"
   },
   "EXT_DESCRIPTION": {
-    "message": "Search the content of your open tabs. Allows fast navigation through open tabs and quick access to information."
+    "message": "Tab manager, tab switcher and search. Fast navigation through open tabs and quick access to information."
   },
   "ACCELERATOR_SEARCH": {
     "message": "Alt+A"
