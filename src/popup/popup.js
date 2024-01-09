@@ -319,28 +319,20 @@ async function onResultsClicked (e) {
     if (!isModifierKeyPressed) {
       const searchQuery = document.getElementById('search').value
 
+      await saveTextToHistory(searchQuery)
+
       try {
-        await saveTextToHistory(searchQuery)
-
-        try {
-          await ch.sendMessageToTab(tabId, { context: 'highlight', searchQuery })
-        } catch (error) {
-          console.error('Error sending message to tab:', error)
-        }
-
-        await ch.tabsUpdate(tabId, { active: true })
-        window.close()
+        await ch.sendMessageToTab(tabId, { context: 'highlight', searchQuery })
       } catch (error) {
-        console.error(error)
+        console.error('Error sending message to tab:', error)
       }
+
+      await ch.tabsUpdate(tabId, { active: true })
+      window.close()
     } else {
-      try {
-        await ch.tabsRemove(tabId)
-        e.target.remove()
-        navigation.selectNextOption()
-      } catch (error) {
-        console.error(error)
-      }
+      await ch.tabsRemove(tabId)
+      e.target.remove()
+      navigation.selectNextOption()
     }
   } else if (e.target.classList.contains('search')) {
     const query = e.target.dataset.query
