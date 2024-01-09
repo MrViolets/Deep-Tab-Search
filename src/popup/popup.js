@@ -178,20 +178,15 @@ async function onSearchInput () {
   if (nonRespondedTabs.length > 0) {
     const queryLower = query.toLowerCase()
 
-    const RELEVANCE_WEIGHTS = { host: 4, url: 3, title: 2, content: 1 }
-
     // Perform a simple search on non-responded tabs
     for (const tab of nonRespondedTabs) {
       const url = new URL(tab.url)
-      let relevanceScore = 0
 
       const urlMatch = url.href.toLowerCase().includes(queryLower)
       const hostMatch = url.hostname.toLowerCase().includes(queryLower)
       const titleMatch = tab.title.toLowerCase().includes(queryLower)
-      relevanceScore += hostMatch ? RELEVANCE_WEIGHTS.host : (urlMatch ? RELEVANCE_WEIGHTS.url : 0)
-      relevanceScore += titleMatch ? RELEVANCE_WEIGHTS.title : 0
 
-      if (relevanceScore > 0) {
+      if (urlMatch || hostMatch || titleMatch) {
         results.push({
           id: tab.id,
           url: tab.url,
@@ -200,7 +195,7 @@ async function onSearchInput () {
           searchQuery: query,
           isCurrentWindow: tab.windowId === currentWindow.id,
           hasSnippets: false,
-          relevance: relevanceScore
+          relevance: 0
         })
       }
     }

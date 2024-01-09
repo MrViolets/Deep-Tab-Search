@@ -21,7 +21,7 @@ function onMessageReceived (message, sender, sendResponse) {
 
 function performSearch (message, sendResponse) {
   const MAX_RESULTS = 1
-  const RELEVANCE_WEIGHTS = { host: 4, url: 3, title: 2, content: 1 }
+  const RELEVANCE_WEIGHTS = { host: 0.95, url: 0.75, title: 0.5, content: 0.25, exactMatch: 0.25, partialMatch: 0.15 }
 
   const searchQuery = message.searchQuery.toLowerCase()
   const originalText = document.body.innerText.replace(/[\r\n\f]+/g, '\n').replace(/[ \t]+/g, ' ')
@@ -29,18 +29,39 @@ function performSearch (message, sendResponse) {
   let relevanceScore = 0
   let matchFoundAnywhere = false
 
+  const titleLower = document.title.toLowerCase()
+
   const urlMatch = document.location.href.toLowerCase().includes(searchQuery)
   const hostMatch = document.location.hostname.toLowerCase().includes(searchQuery)
-  const titleMatch = document.title.toLowerCase().includes(searchQuery)
+  const titleMatch = titleLower.includes(searchQuery)
 
   relevanceScore += hostMatch ? RELEVANCE_WEIGHTS.host : (urlMatch ? RELEVANCE_WEIGHTS.url : 0)
   relevanceScore += titleMatch ? RELEVANCE_WEIGHTS.title : 0
   matchFoundAnywhere = urlMatch || titleMatch
 
+  if (titleMatch) {
+    const titleIndex = titleLower.indexOf(searchQuery)
+    const titleMatchType = getMatchType(titleLower, searchQuery, titleIndex)
+
+    if (titleMatchType === 'full') {
+      relevanceScore += RELEVANCE_WEIGHTS.exactMatch
+    } else if (titleMatchType === 'partial') {
+      relevanceScore += RELEVANCE_WEIGHTS.partialMatch
+    }
+  }
+
   const results = []
   let index = 0
 
   while ((index = pageText.indexOf(searchQuery, index)) !== -1) {
+    const contentMatchType = getMatchType(pageText, searchQuery, index)
+
+    if (contentMatchType === 'full') {
+      relevanceScore += RELEVANCE_WEIGHTS.exactMatch
+    } else if (contentMatchType === 'partial') {
+      relevanceScore += RELEVANCE_WEIGHTS.partialMatch
+    }
+
     const originalIndex = index
     const queryEndIndex = index + searchQuery.length
     const snippet = getSnippet(originalText, index, queryEndIndex).replace(/\s+/g, ' ')
@@ -48,11 +69,26 @@ function performSearch (message, sendResponse) {
     results.push({ snippet, relevanceScore })
     index = originalIndex + searchQuery.length
     matchFoundAnywhere = true
+
     if (results.length === MAX_RESULTS) break
   }
 
   if (results.length > 0) relevanceScore += RELEVANCE_WEIGHTS.content
+
   sendResponse({ searchId: message.searchId, results, matchFoundAnywhere, relevanceScore })
+}
+
+function getMatchType (text, query, index) {
+  const wordBoundaryBefore = (index === 0 || ' \n'.includes(text[index - 1]))
+  const wordBoundaryAfter = (index + query.length === text.length || ' \n'.includes(text[index + query.length]))
+
+  if (wordBoundaryBefore && wordBoundaryAfter) {
+    return 'full'
+  } else if (wordBoundaryBefore) {
+    return 'partial'
+  } else {
+    return 'normal'
+  }
 }
 
 function getSnippet (originalText, queryStartIndex, queryEndIndex) {
