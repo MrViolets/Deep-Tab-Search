@@ -321,7 +321,13 @@ async function onResultsClicked (e) {
 
       try {
         await saveTextToHistory(searchQuery)
-        await ch.sendMessageToTab(tabId, { context: 'highlight', searchQuery })
+
+        try {
+          await ch.sendMessageToTab(tabId, { context: 'highlight', searchQuery })
+        } catch (error) {
+          console.error('Error sending message to tab:', error)
+        }
+
         await ch.tabsUpdate(tabId, { active: true })
         window.close()
       } catch (error) {
