@@ -1,7 +1,7 @@
 {
   "name": "deep-tab-search",
   "productName": "Deep Tab Search",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Sylvester Wilmott",
   "license": "GPL-3.0",
   "devDependencies": {
