@@ -341,6 +341,10 @@ mark {
   mask-image: url("images/search.svg");
 }
 
+.icon.history {
+  mask-image: url("images/history.svg");
+}
+
 .selected .icon {
   background: var(--accent);
 }

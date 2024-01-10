@@ -13,6 +13,7 @@ let isModifierKeyPressed = false
 let isIndexingComplete = false
 let cachedResultTemplate = null
 let cachedSearchTemplate = null
+let cachedHistoryTemplate = null
 
 document.addEventListener('DOMContentLoaded', init)
 
@@ -33,12 +34,19 @@ async function init () {
   }
 
   updatePlaceholderAfterDelay()
+  await preloadTemplates()
   await renderAllTabs()
 
   await inject.injectScriptsIfNeeded()
 
   isIndexingComplete = true
   searchInputEl.placeholder = chrome.i18n.getMessage('PLACEHOLDER_SEARCH')
+}
+
+async function preloadTemplates () {
+  cachedResultTemplate = await getCachedTemplate('result-fragment.html', cachedResultTemplate)
+  cachedSearchTemplate = await getCachedTemplate('search-fragment.html', cachedSearchTemplate)
+  cachedHistoryTemplate = await getCachedTemplate('history-fragment.html', cachedHistoryTemplate)
 }
 
 async function getCachedTemplate (templateUrl, cacheVariable) {
@@ -223,8 +231,8 @@ async function onSearchInput () {
     const itemLower = historyItem.toLowerCase()
     const queryLower = query.toLowerCase()
 
-    if (itemLower !== queryLower && itemLower.includes(queryLower) && !renderedItems.has(itemLower)) {
-      await renderWebSearchItem(historyItem, fragment)
+    if (itemLower.includes(queryLower) && !renderedItems.has(itemLower)) {
+      await renderHistoryItem(historyItem, query, fragment)
       renderedItems.add(itemLower)
     }
   }
@@ -251,6 +259,21 @@ async function renderWebSearchItem (text, parent) {
 
   const titleEl = fragment.querySelector('.title')
   titleEl.innerText = text
+
+  parent.appendChild(fragment)
+}
+
+async function renderHistoryItem (text, query, parent) {
+  cachedHistoryTemplate = await getCachedTemplate('history-fragment.html', cachedHistoryTemplate)
+  const template = document.createElement('template')
+  template.innerHTML = cachedHistoryTemplate
+  const fragment = template.content
+
+  const historyEl = fragment.querySelector('.list-item')
+  historyEl.dataset.query = text
+
+  const titleEl = fragment.querySelector('.title')
+  titleEl.innerHTML = highlightText(text, query)
 
   parent.appendChild(fragment)
 }
@@ -341,6 +364,9 @@ async function onResultsClicked (e) {
       text: query,
       disposition: 'NEW_TAB'
     })
+  } else if (e.target.classList.contains('history')) {
+    const query = e.target.dataset.query
+    updateSearchInputAndDispatchEvent(query)
   }
 }
 
@@ -385,13 +411,7 @@ async function onSearchKeydown (e) {
     }
 
     if (newInputValue) {
-      const searchInput = document.getElementById('search')
-      searchInput.value = newInputValue
-      searchInput.select()
-
-      // Dispatch an input event
-      const event = new Event('input', { bubbles: true })
-      searchInput.dispatchEvent(event)
+      updateSearchInputAndDispatchEvent(newInputValue)
     }
   }
 }
@@ -426,4 +446,13 @@ function onDocumentKeyup (e) {
 
     isModifierKeyPressed = false
   }
+}
+
+function updateSearchInputAndDispatchEvent (value) {
+  const searchInput = document.getElementById('search')
+  searchInput.value = value
+  searchInput.select()
+
+  const event = new Event('input', { bubbles: true })
+  searchInput.dispatchEvent(event)
 }
