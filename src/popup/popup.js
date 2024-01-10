@@ -266,7 +266,7 @@ async function renderWebSearchItem (text, parent) {
 async function renderHistoryItem (text, query, parent) {
   cachedHistoryTemplate = await getCachedTemplate('history-fragment.html', cachedHistoryTemplate)
   const template = document.createElement('template')
-  template.innerHTML = cachedSearchTemplate
+  template.innerHTML = cachedHistoryTemplate
   const fragment = template.content
 
   const historyEl = fragment.querySelector('.list-item')
