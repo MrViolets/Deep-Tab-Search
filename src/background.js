@@ -7,7 +7,6 @@ import * as inject from './scripts/inject.js'
 
 chrome.runtime.onInstalled.addListener(onInstalled)
 chrome.runtime.onStartup.addListener(onStartup)
-
 chrome.tabs.onActivated.addListener(onTabActivated)
 chrome.tabs.onCreated.addListener(onTabCreated)
 chrome.tabs.onRemoved.addListener(onTabRemoved)
