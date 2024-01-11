@@ -15,10 +15,10 @@
     "message": "\u2325A"
   },
   "PLACEHOLDER_INDEXING": {
-      "message": "Indexing\u2026"
+    "message": "Indexing\u2026"
   },
   "PLACEHOLDER_SEARCH": {
-      "message": "Search Tabs\u2026"
+    "message": "Search Tabs\u2026"
   },
   "SEARCH_RESULT_GO_TO_TAB": {
     "message": "Go To Tab"
