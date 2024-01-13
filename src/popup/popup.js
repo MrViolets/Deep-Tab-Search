@@ -212,8 +212,6 @@ async function onSearchInput () {
   // Sort results by relevance
   results.sort((a, b) => b.relevance - a.relevance)
 
-  console.log(results, query)
-
   const fragment = document.createDocumentFragment()
 
   for (const result of results) {

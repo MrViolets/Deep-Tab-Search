@@ -22,8 +22,13 @@ async function handleTab (tab) {
   // Check if the tab is discarded (unloaded)
   if (tab.discarded || tab.status === 'unloaded') {
     console.log(`Tab ${tab.id} is discarded, reloading`)
-    await ch.tabsReload(tab.id)
-    await waitForTabReload(tab.id)
+
+    try {
+      await ch.tabsReload(tab.id)
+      await waitForTabReload(tab.id)
+    } catch (error) {
+      console.error('Error reloading tab:', error)
+    }
   }
 
   // Try injecting the script

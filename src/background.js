@@ -3,10 +3,8 @@
 /* global chrome */
 
 import * as ch from './promisify.js'
-import * as inject from './scripts/inject.js'
 
 chrome.runtime.onInstalled.addListener(onInstalled)
-chrome.runtime.onStartup.addListener(onStartup)
 chrome.tabs.onActivated.addListener(onTabActivated)
 chrome.tabs.onCreated.addListener(onTabCreated)
 chrome.tabs.onRemoved.addListener(onTabRemoved)
@@ -15,11 +13,6 @@ const MAX_RECENT_TABS = 100
 
 async function onInstalled () {
   await setActionTitle()
-  await inject.injectScriptsIfNeeded()
-}
-
-async function onStartup () {
-  await inject.injectScriptsIfNeeded()
 }
 
 async function setActionTitle () {
