@@ -1,7 +1,8 @@
 :root {
   color-scheme: light;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", Arial, sans-serif;
-  --accent: #014BDC;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", Arial, sans-serif;
+  --accent: #014bdc;
   --primary: #1f1f1f;
   --secondary: #474747;
   --tertiary: #ededed;
@@ -17,7 +18,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --accent: #014BDC;
+    --accent: #014bdc;
     --primary: #e3e3e3;
     --secondary: #c6c6c6;
     --tertiary: #383838;
@@ -267,15 +268,18 @@ body {
 }
 
 .right-detail-icon.current {
-  mask-image: url("images/arrow-forward.svg");
+  -webkit-mask-image: url(images/arrow-forward.svg);
+  mask-image: url(images/arrow-forward.svg);
 }
 
 .right-detail-icon.external {
-  mask-image: url("images/arrow-outward.svg");
+  -webkit-mask-image: url(images/arrow-outward.svg);
+  mask-image: url(images/arrow-outward.svg);
 }
 
 .right-detail-icon.remove {
-  mask-image: url("images/remove.svg") !important;
+  -webkit-mask-image: url(images/remove.svg) !important;
+  mask-image: url(images/remove.svg) !important;
 }
 
 .selected .right-detail-icon {
@@ -338,11 +342,13 @@ mark {
 }
 
 .icon.search {
-  mask-image: url("images/search.svg");
+  -webkit-mask-image: url(images/search.svg);
+  mask-image: url(images/search.svg);
 }
 
 .icon.history {
-  mask-image: url("images/history.svg");
+  -webkit-mask-image: url(images/history.svg);
+  mask-image: url(images/history.svg);
 }
 
 .selected .icon {
